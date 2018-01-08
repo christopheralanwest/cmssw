@@ -49,7 +49,7 @@ simHcalTriggerPrimitiveDigis = cms.EDProducer("HcalTrigPrimDigiProducer",
     InputTagFEDRaw = cms.InputTag("rawDataCollector"),
     RunZS = cms.bool(False),
     FrontEndFormatError = cms.bool(False), # Front End Format Error, for real data only
-    PeakFinderAlgorithm = cms.int32(2),
+    PeakFinderAlgorithm = cms.int32(3),
 
     HFTPScaleShift = hfTPScaleShift,
 )

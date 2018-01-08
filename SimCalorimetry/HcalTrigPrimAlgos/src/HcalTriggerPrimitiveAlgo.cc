@@ -332,6 +332,7 @@ void HcalTriggerPrimitiveAlgo::analyze(IntegerCaloSamples & samples, HcalTrigger
                isPeak = (samples[idx] > samples[idx-1] && samples[idx] >= samples[idx+1] && samples[idx] > theThreshold);
                break;
             case 2:
+            case 3:
                isPeak = (sum[idx] > sum[idx-1] && sum[idx] >= sum[idx+1] && sum[idx] > theThreshold);
                break;
             default:
@@ -378,6 +379,12 @@ HcalTriggerPrimitiveAlgo::analyze2017(IntegerCaloSamples& samples, HcalTriggerPr
 	// to mimic 5 degree segmentation for the trigger
 	if(ids.size()==2) algosumvalue += int(samples[ibin+i] * 0.5 * weights_[i]);
 	else algosumvalue += int(samples[ibin+i] * weights_[i]);
+      }
+      if(peakfind_ && peak_finder_algorithm_ == 3) {
+	int pedsumvalue = 0;
+	if(ids.size()==2) pedsumvalue = int(samples[ibin-1] * 0.5);
+	else pedsumvalue = samples[ibin-1];
+	algosumvalue -= pedsumvalue;
       }
       if (algosumvalue<0) sum[ibin]=0;            // low-side
                                                   //high-side
