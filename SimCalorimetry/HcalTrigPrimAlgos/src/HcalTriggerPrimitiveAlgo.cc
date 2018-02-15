@@ -381,9 +381,11 @@ HcalTriggerPrimitiveAlgo::analyze2017(IntegerCaloSamples& samples, HcalTriggerPr
 	else algosumvalue += int(samples[ibin+i] * weights_[i]);
       }
       if(peakfind_ && peak_finder_algorithm_ == 3) {
+	// The contribution of pileup is estimated from the presample
+	// and then subtracted from _each_ of the two samples
 	int pedsumvalue = 0;
-	if(ids.size()==2) pedsumvalue = int(samples[ibin-1] * 0.5);
-	else pedsumvalue = samples[ibin-1];
+	if(ids.size()==2) pedsumvalue = samples[ibin-1];
+	else pedsumvalue = 2 * samples[ibin-1];
 	algosumvalue -= pedsumvalue;
       }
       if (algosumvalue<0) sum[ibin]=0;            // low-side
