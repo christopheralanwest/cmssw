@@ -292,6 +292,12 @@ void HcalTriggerPrimitiveAlgo::analyze(IntegerCaloSamples & samples, HcalTrigger
          //add up value * scale factor
          algosumvalue += int(samples[ibin+i] * weights_[i]);
       }
+      if(peakfind_ && peak_finder_algorithm_ == 3) {
+	// The contribution of pileup is estimated from the presample
+	// and then subtracted from _each_ of the two samples
+	int pedsumvalue = 2 * samples[ibin-1];
+	algosumvalue -= pedsumvalue;
+      }
       if (algosumvalue<0) sum[ibin]=0;            // low-side
                                                   //high-side
       //else if (algosumvalue>QIE8_LINEARIZATION_ET) sum[ibin]=QIE8_LINEARIZATION_ET;
