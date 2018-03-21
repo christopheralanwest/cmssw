@@ -391,7 +391,7 @@ void HcaluLUTTPGCoder::update(const HcalDbService& conditions) {
                     else
                        lut[adc] = (LutElement) std::min(std::max(0, int((adc2fC(adc) - ped) * gain * rcalib * nonlinearityCorrection * containmentCorrection2TSCorrected / nominalgain_ / granularity)), MASK);
 
-		    if(qieType==QIE11){
+		    if(qieType==QIE11 && !(cell.ietaAbs()==16 && topo_->triggerMode() <= HcalTopologyMode::TriggerMode_2018)){
 			if (adc >= mipMin and adc < mipMax) lut[adc] |= QIE11_LUT_MSB0;
 			else if (adc >= mipMax) lut[adc] |= QIE11_LUT_MSB1;
 		    }
