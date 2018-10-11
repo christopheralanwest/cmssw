@@ -643,7 +643,7 @@ void HcalTriggerPrimitiveAlgo::analyzeHF2017(
                }
             }
 	    // the EM bit is only used if the "second" FG bit is disabled
-            if (embit != nullptr and FG_HF_thresholds.at(1) != 255) {
+            if (embit != nullptr and FG_HF_thresholds_.at(1) != 255) {
                finegrain[ibin][0] = embit->fineGrainbit(
                      details[1].digi, details[3].digi,
                      details[0].digi, details[2].digi,
