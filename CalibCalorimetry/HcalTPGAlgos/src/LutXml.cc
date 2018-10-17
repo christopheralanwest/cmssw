@@ -123,7 +123,7 @@ void LutXml::addLut( LutXml::Config & _config, XMLDOMBlock * checksums_xml )
 	addParameter( "DEPTH", "int", _config.depth );
 	addData( to_string(_config.lut.size()), "hex", _config.lut );
     }
-    else if(_config.lut_type==2 || _config.lut_type==4){ // compression LUT or HE feature bit LUT
+    else if(_config.lut_type==2 || _config.lut_type==3 || _config.lut_type==4){ // compression LUT or HF/HE feature bit LUT
 	addParameter( "IETA", "int", _config.ieta );
 	addParameter( "IPHI", "int", _config.iphi );
 	addParameter( "TOPBOTTOM", "int", _config.topbottom );
@@ -277,6 +277,14 @@ std::string LutXml::get_checksum( std::vector<unsigned int> & lut )
   else if ( lut . size() == 4096){
     unsigned char tool;
     for (int i=0; i<4096; i++) {
+      tool=lut[i]&0xFF;
+      md5_append(&md5er,&tool,1);
+    }
+  }
+  // HE fine grain LUT
+  else if ( lut . size() == 16384){
+    unsigned char tool;
+    for (int i=0; i<16384; i++) {
       tool=lut[i]&0xFF;
       md5_append(&md5er,&tool,1);
     }

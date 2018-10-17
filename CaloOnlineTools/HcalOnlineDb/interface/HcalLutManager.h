@@ -101,6 +101,7 @@ class HcalLutManager{
 
   std::map<int, std::shared_ptr<LutXml> > getHEFineGrainLUTs(std::string _tag, bool split_by_crate = true );
 
+  std::map<int, std::shared_ptr<LutXml> > getHFLongShortLUTs(std::string _tag, bool split_by_crate = true );
 
   // add two std::map<s with LUTs. Designed mainly for joining compression LUTs to linearization ones.
   void addLutMap(std::map<int,

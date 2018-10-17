@@ -855,6 +855,79 @@ std::map<int, std::shared_ptr<LutXml> > HcalLutManager::getLinearizationLutXmlFr
   return _xml;
 }
 
+std::map<int, std::shared_ptr<LutXml> > HcalLutManager::getHFLongShortLUTs(std::string _tag, bool split_by_crate )
+{
+  edm::LogInfo("HcalLutManager") << "Generating LUTs for HF long/short feature bit";
+  std::map<int, std::shared_ptr<LutXml> > _xml; // index - crate number
+
+  EMap _emap(emap);
+  std::vector<EMap::EMapRow> & _map = _emap.get_map();
+  edm::LogInfo("HcalLutManager") << "EMap contains " << _map . size() << " entries";
+
+  RooGKCounter _counter;
+  //loop over all EMap channels
+  for( std::vector<EMap::EMapRow>::const_iterator row=_map.begin(); row!=_map.end(); row++ ){
+    if( row->subdet.find("HT")!=string::npos && row->subdet.size()==2 ){
+      int abseta = abs(row->ieta);
+      const HcalTopology* topo = cq->topo();
+      if(abseta<=topo->lastHERing()) continue;
+      LutXml::Config _cfg;
+
+      if ( _xml.count(row->crate) == 0 && split_by_crate ){
+	_xml.insert( std::pair<int,std::shared_ptr<LutXml> >(row->crate,std::make_shared<LutXml>()) );
+      }
+      else if ( _xml.count(0) == 0 && !split_by_crate ){
+	_xml.insert( std::pair<int,std::shared_ptr<LutXml> >(0,std::make_shared<LutXml>()) );
+      }
+      _cfg.ieta = row->ieta;
+      _cfg.iphi = row->iphi;
+      _cfg.depth = row->idepth;
+      _cfg.crate = row->crate;
+      _cfg.slot = row->slot;
+      if (row->topbottom . find("t") != std::string::npos) _cfg.topbottom = 1;
+      else if (row->topbottom . find("b") != std::string::npos) _cfg.topbottom = 0;
+      else if (row->topbottom . find("u") != std::string::npos) _cfg.topbottom = 2;
+      else edm::LogWarning("HcalLutManager") << "fpga out of range...";
+      _cfg.fiber = row->fiber;
+      _cfg.fiberchan = row->fiberchan;
+      _cfg.lut_type = 3;
+      _cfg.creationtag = _tag;
+      _cfg.creationstamp = get_time_stamp( time(nullptr) );
+      _cfg.targetfirmware = "1.0.0";
+      _cfg.formatrevision = "1"; //???
+      _cfg.generalizedindex =
+	_cfg.iphi*10000 + _cfg.depth*1000 +
+	(row->ieta>0)*100 + abs(row->ieta) +
+	(((row->subdet.find("HF")!=string::npos) && abs(row->ieta)==29)?(4*10000):(0));
+      // long/short LUTs only relevant for HF
+      HcalSubdetector _subdet = HcalForward;
+      HcalDetId _detid(_subdet, row->ieta, row->iphi, row->idepth);
+
+      // loop over all 2^14 possible configurations,
+      // computing the LUT for each
+      const int n_fgab_bits = 16384;
+      for (int i=0; i < n_fgab_bits; i++) {
+	// insert actual algorithm here
+	_cfg.lut.push_back(1);
+      }
+
+      if (split_by_crate ){
+	_xml[row->crate]->addLut( _cfg, lut_checksums_xml );
+	_counter.count();
+      }
+      else{
+	_xml[0]->addLut( _cfg, lut_checksums_xml );
+	_counter.count();
+      }
+    }
+  }
+  edm::LogInfo("HcalLutManager") << "Generated LUTs: " << _counter.getCount() << std::endl
+    << "Generating HF fine grain LUTs from HcaluLUTTPGCoder...DONE" << std::endl;
+  return _xml;
+
+
+}
+
 std::map<int, std::shared_ptr<LutXml> > HcalLutManager::getHEFineGrainLUTs(std::string _tag, bool split_by_crate )
 {
   edm::LogInfo("HcalLutManager") << "Generating HE fine grain LUTs";
@@ -1222,6 +1295,9 @@ int HcalLutManager::createLutXmlFiles_HBEFFromCoder_HOFromAscii( std::string _ta
 
   const std::map<int, std::shared_ptr<LutXml> > _HE_FG_lut_xml = getHEFineGrainLUTs(_tag, split_by_crate );
   addLutMap( xml, _HE_FG_lut_xml );
+
+  const std::map<int, std::shared_ptr<LutXml> > _HF_long_short_lut_xml = getHFLongShortLUTs(_tag, split_by_crate );
+  addLutMap( xml, _HF_long_short_lut_xml );
 
   writeLutXmlFiles( xml, _tag, split_by_crate );
   
@@ -1728,6 +1804,9 @@ int HcalLutManager::createLutXmlFiles_HBEFFromCoder_HOFromAscii_ZDC( std::string
 
   const std::map<int, std::shared_ptr<LutXml> > _HE_FG_lut_xml = getHEFineGrainLUTs(_tag, split_by_crate );
   addLutMap( xml, _HE_FG_lut_xml );
+
+  const std::map<int, std::shared_ptr<LutXml> > _HF_long_short_lut_xml = getHFLongShortLUTs(_tag, split_by_crate );
+  addLutMap( xml, _HF_long_short_lut_xml );
 
   for(auto masktype: {0,1,2}){
       const auto masks=getMasks(masktype, _tag, split_by_crate);
