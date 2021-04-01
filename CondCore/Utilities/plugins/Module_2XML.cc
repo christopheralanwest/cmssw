@@ -269,6 +269,7 @@ PAYLOAD_2XML_MODULE(pluginUtilities_payload2xml) {
   PAYLOAD_2XML_CLASS(SiStripNoises);
   PAYLOAD_2XML_CLASS(SiStripPedestals);
   PAYLOAD_2XML_CLASS(SiStripThreshold);
+  PAYLOAD_2XML_CLASS(SimBeamSpotObjects);
   PAYLOAD_2XML_CLASS(DTCELinkId);
   PAYLOAD_2XML_CLASS(TrackerDetToDTCELinkCablingMap);
   //PAYLOAD_2XML_CLASS( StorableDoubleMap<AbsOOTPileupCorrection> );

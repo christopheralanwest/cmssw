@@ -267,6 +267,7 @@
 #include "CondFormats/SiStripObjects/interface/SiStripLorentzAngle.h"
 #include "CondFormats/SiStripObjects/interface/SiStripNoises.h"
 #include "CondFormats/SiStripObjects/interface/SiStripPedestals.h"
+#include "CondFormats/BeamSpotObjects/interface/SimBeamSpotObjects.h"
 #include "CondFormats/BTauObjects/interface/TrackProbabilityCalibration.h"
 #include "CondFormats/MFObjects/interface/MagFieldConfig.h"
 #include "CondFormats/PCLConfig/interface/AlignPCLThresholds.h"
