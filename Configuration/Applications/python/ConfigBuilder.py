@@ -1372,6 +1372,8 @@ class ConfigBuilder(object):
                 from Configuration.StandardSequences.VtxSmeared import VtxSmeared
                 cffToBeLoaded=VtxSmeared[self._options.beamspot]
                 self.loadAndRemember(cffToBeLoaded)
+                if self._options.beamspot == "DB":
+                    self.executeAndRemember("process.VtxSmeared.readDB = cms.bool(True)")
             except ImportError:
                 raise Exception("VertexSmearing type or beamspot "+self._options.beamspot+" unknown.")
 

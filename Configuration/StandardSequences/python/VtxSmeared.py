@@ -1,5 +1,6 @@
 VtxSmeared = {
     'NoSmear':                       'Configuration.StandardSequences.VtxSmearedNoSmear_cff',              
+    'DB':                            'IOMC.EventVertexGenerators.VtxSmearedDB_cfi',
     'BetafuncEarlyCollision':        'IOMC.EventVertexGenerators.VtxSmearedBetafuncEarlyCollision_cfi',    
     'BeamProfile':                   'IOMC.EventVertexGenerators.VtxSmearedBeamProfile_cfi',               
     'BetafuncEarlyCollision':        'IOMC.EventVertexGenerators.VtxSmearedBetafuncEarlyCollision_cfi',    
